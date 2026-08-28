@@ -5,7 +5,7 @@
  * filters, CSV/PDF export buttons, per-order status update controls,
  * and return-request approval/rejection handling.
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 const STATUS_COLOR = {
@@ -70,13 +70,6 @@ export default function OrderManagementPanel({
   onRejectReturn,
 }) {
   const { t } = useTranslation();
-  const [returnActions, setReturnActions] = useState(new Set());
-
-  function handleReturnAction(action, orderId) {
-    if (returnActions.has(orderId)) return;
-    setReturnActions((current) => new Set(current).add(orderId));
-    action?.(orderId);
-  }
 
   return (
     <div style={{ ...s.card, marginTop: 24 }}>
@@ -208,8 +201,7 @@ export default function OrderManagementPanel({
                             fontWeight: 600,
                             fontSize: 12,
                           }}
-                          disabled={returnActions.has(o.id)}
-                          onClick={() => handleReturnAction(onApproveReturn, o.id)}
+                          onClick={() => onApproveReturn?.(o.id)}
                         >
                           ✅ Approve &amp; Refund
                         </button>
@@ -224,8 +216,7 @@ export default function OrderManagementPanel({
                             fontWeight: 600,
                             fontSize: 12,
                           }}
-                          disabled={returnActions.has(o.id)}
-                          onClick={() => handleReturnAction(onRejectReturn, o.id)}
+                          onClick={() => onRejectReturn?.(o.id)}
                         >
                           ❌ Reject
                         </button>
